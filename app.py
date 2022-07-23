@@ -46,7 +46,8 @@ def process_image():
 
     input_path = generate_random_filename(upload_directory,"jpeg")
     output_path = os.path.join(results_img_directory, os.path.basename(input_path))
-
+    print("request files",request.files)
+    print("request json",request.json)
     try:
         if 'file' in request.files:
             file = request.files['file']
