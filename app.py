@@ -47,14 +47,13 @@ def process_image():
     input_path = generate_random_filename(upload_directory,"jpeg")
     output_path = os.path.join(results_img_directory, os.path.basename(input_path))
     print("request files",request.files)
-    print("request json",request.json)
     try:
         if 'file' in request.files:
             file = request.files['file']
             if allowed_file(file.filename):
                 file.save(input_path)
             try:
-                render_factor = request.form.getlist('render_factor')[0]
+                render_factor = int(request.form.getlist('render_factor')[0])
             except:
                 render_factor = 30
             
