@@ -40,9 +40,36 @@ app = Flask(__name__)
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route("/", methods=["GET"])
+@app.route("/check", methods=["GET"])
 def check():
     return "Hi"
+
+# define a predict function as an endpoint
+@app.route("/upload", methods=["POST"])
+def upload_image():
+    input_path = generate_random_filename(upload_directory,"jpeg")
+    output_path = os.path.join(results_img_directory, os.path.basename(input_path))
+    print("request files",request.files)
+    print("input_path",input_path)
+    print("output_path",output_path)
+    try:
+        if 'file' in request.files:
+            file = request.files['file']
+            if allowed_file(file.filename):
+                file.save(output_path)
+            try:
+                render_factor = int(request.form.getlist('render_factor')[0])
+            except:
+                render_factor = 30
+    except:
+        traceback.print_exc()
+        print("error---")
+        return {'message': 'input error'}, 400
+
+    finally:
+        pass
+    callback = send_file(output_path)
+    return callback, 200
 
 # define a predict function as an endpoint
 @app.route("/process", methods=["POST"])
